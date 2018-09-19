@@ -1,6 +1,6 @@
 # What it does
 This container runs the *rclone copy* command to copy local content to a remote repository.
-To do this the user must setup the remote config at runtime. How to do this is explained below. 
+To do this the user must setup the remote config at runtime and mount the folder in which the data is stored. How to do this is explained below. 
 
 # Setup credentials
 
@@ -23,12 +23,19 @@ To use your .env file simply add it to the command line this way:
 
 The required environment variables for each remote depend on the remote type you want *rclone* to connect to.
 The different remote types available in *rclone* can be found [here](https://rclone.org/overview/).
+    
+The expected name for the remote repo is *myremote*, if you want to change this name you will have to update the script too.
+The example *credentials.env* file below gives you all the necessary variables to reach your own S3 repo. 
 
-### Remote configuration
+
+# Shared folder    
+
+This image is setup so that the entire content of the shared volume (called _/data_ in the container) is copied to the remote destination.    
+If no _/data_ volume is shared at runtime, nothing will be copied. An example is given below using the *-v* option, for more details please see Docker's manual.
 
 # Example
 
-## Config file    
+## Credentials file    
 
 _credentials.env_
 ```
@@ -43,7 +50,7 @@ RCLONE_CONFIG_MYREMOTE_ACL=private
 
 ## Full command line    
 
-docker run -v /path/to/mydata:/data --env-file credentials.env rclone_copy test-data.txt myremote:bucket/path
+docker run -v /path/to/mydata:/data --env-file credentials.env rclone_copy myremote:path/to/dest
 
 # Reference   
 * **rclone**: <https://rclone.org/>   
